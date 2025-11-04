@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import pool from './config/db';
 
 dotenv.config();
 
@@ -12,6 +13,10 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
+
+pool.connect()
+  .then(() => console.log('📦 Database connected successfully!'))
+  .catch((err) => console.error('❌ Database connection failed:', err));
 
 app.get('/', (req: Request, res: Response) => {
   res.json({
@@ -46,6 +51,7 @@ app.use((err: Error, req: Request, res: Response, next: any) => {
   });
 });
 
+// Start server
 app.listen(PORT, () => {
   console.log(` Learnito server running on port ${PORT}`);
   console.log(` Environment: ${process.env.NODE_ENV || 'development'}`);
