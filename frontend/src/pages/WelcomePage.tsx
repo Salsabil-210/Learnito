@@ -37,9 +37,10 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
           </h1>
           <button
             onClick={onGetStarted}
-            className="bg-white text-blue-600 font-semibold px-8 py-3 rounded-full shadow-md hover:shadow-xl hover:scale-105 transition-all duration-300 border border-blue-100"
+            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-pink-600 text-white font-bold rounded-full shadow-lg hover:shadow-2xl hover:scale-105 hover:from-blue-700 hover:to-pink-700 transition-all duration-300 flex items-center gap-2"
           >
             Sign In
+            <ArrowRight size={18} />
           </button>
         </div>
       </motion.nav>
@@ -70,15 +71,13 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-6">
             <button
               onClick={onGetStarted}
-              className="sm:w-auto px-8 py-4 bg-white text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-600 font-bold rounded-full shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 border-2 border-blue-200 flex items-center justify-center gap-2"
+              className="sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-pink-600 text-white font-bold rounded-full shadow-lg hover:shadow-2xl hover:scale-105 hover:from-blue-700 hover:to-pink-700 transition-all duration-300 flex items-center justify-center gap-2"
             >
-              <span className="bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">
-                Get Started
-              </span>
-              <ArrowRight size={18} className="text-blue-600" />
+              Get Started
+              <ArrowRight size={18} />
             </button>
             <button
-              className="sm:w-auto px-8 py-4 bg-white/80 text-blue-700 font-semibold border-2 border-blue-200 hover:bg-white hover:shadow-lg hover:scale-105 rounded-full transition-all duration-300"
+              className="sm:w-auto px-8 py-4 bg-white text-blue-700 font-semibold border-2 border-blue-200 hover:bg-blue-50 hover:shadow-lg hover:scale-105 rounded-full transition-all duration-300"
             >
               Learn More
             </button>
@@ -167,12 +166,10 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
           </p>
           <button
             onClick={onGetStarted}
-            className="w-full sm:w-auto px-10 py-4 bg-white text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-pink-600 font-bold rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 mx-auto border-2 border-white/20"
+            className="w-full sm:w-auto px-10 py-4 bg-white text-pink-600 font-bold rounded-full shadow-xl hover:shadow-2xl hover:scale-105 hover:bg-pink-50 transition-all duration-300 flex items-center justify-center gap-2 mx-auto"
           >
-            <span className="bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">
-              Join Learnito Now
-            </span>
-            <ArrowRight size={18} className="text-pink-600" />
+            Join Learnito Now
+            <ArrowRight size={18} />
           </button>
         </div>
       </motion.section>
