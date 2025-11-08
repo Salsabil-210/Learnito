@@ -20,3 +20,7 @@ export async function hashPassword(plain: string) {
   const saltRounds = 10;
   return bcrypt.hash(plain, saltRounds);
 }
+
+export async function comparePassword(plain: string, hashed: string): Promise<boolean> {
+  return bcrypt.compare(plain, hashed);
+}

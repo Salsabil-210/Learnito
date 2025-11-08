@@ -1,11 +1,11 @@
 import { PrismaClient, User } from '@prisma/client';
 import { CreateUserInput, UpdateUserInput } from '../types/user';
-import { hashPassword } from '../utils/user-mapper';
+import { hashPassword, comparePassword } from '../utils/user-mapper';  
 
 const prisma = new PrismaClient();
 
 export const userRepository = {
-  async create(data: CreateUserInput): Promise<User> {
+  async signup(data: CreateUserInput): Promise<User> {
     const hashed = await hashPassword(data.password);
     return prisma.user.create({
       data: {
@@ -19,8 +19,16 @@ export const userRepository = {
     });
   },
 
-  async findAll(): Promise<User[]> {
-    return prisma.user.findMany({ orderBy: { createdAt: 'desc' } });
+  async login(email: string, password: string): Promise<User | null> {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (user && user.password && (await comparePassword(password, user.password))) {
+      return user;
+    }
+    return null;
+  },
+
+  async findByEmail(email: string): Promise<User | null> {
+    return prisma.user.findUnique({ where: { email } });
   },
 
   async findById(id: string): Promise<User | null> {
@@ -37,6 +45,4 @@ export const userRepository = {
       data: payload,
     });
   },
-
- 
 };

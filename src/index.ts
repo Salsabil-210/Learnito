@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import pool from './config/db';
-import userRoutes from './routes/user.routes';
+import authRoutes from './routes/auth.routes';
 dotenv.config();
 
 const app: Application = express();
@@ -14,12 +14,11 @@ app.use(cors());
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
 
-//api routes
-app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
 
 pool.connect()
-  .then(() => console.log('📦 Database connected successfully!'))
-  .catch((err) => console.error('❌ Database connection failed:', err));
+  .then(() => console.log(' Database connected successfully!'))
+  .catch((err) => console.error(' Database connection failed:', err));
 
 app.get('/', (req: Request, res: Response) => {
   res.json({

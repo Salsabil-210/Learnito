@@ -23,11 +23,11 @@ const pool = new Pool({
 });
 
 pool.on("connect", () => {
-  console.log("✅ Connected to PostgreSQL successfully!");
+  console.log(" Connected to PostgreSQL successfully!");
 });
 
 pool.on("error", (err) => {
-  console.error("❌ Unexpected error on PostgreSQL client:", err);
+  console.error(" Unexpected error on PostgreSQL client:", err);
   process.exit(-1);
 });
 

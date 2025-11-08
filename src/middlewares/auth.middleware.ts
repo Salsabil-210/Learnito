@@ -5,7 +5,7 @@ export interface AuthenticatedRequest extends Request {
   user?: JwtPayload;
 }
 
-export function authenticateToken(
+export function authenticate(
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
