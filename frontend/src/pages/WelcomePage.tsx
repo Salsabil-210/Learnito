@@ -225,35 +225,6 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
         </div>
       </motion.section>
 
-      {/* Stats Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="py-16 bg-gradient-to-r from-blue-600 to-pink-600 text-white"
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[
-              { number: "10K+", label: "Active Learners" },
-              { number: "50+", label: "Countries" },
-              { number: "98%", label: "Satisfaction Rate" },
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 + index * 0.1 }}
-                className="space-y-2"
-              >
-                <div className="text-3xl md:text-4xl font-bold">{stat.number}</div>
-                <div className="text-blue-100 text-sm font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
-
       {/* Enhanced CTA Section */}
       <motion.section
         initial={{ opacity: 0, y: 40 }}
