@@ -4,29 +4,41 @@ import { CreateUserInput, UpdateUserInput, UserResponse } from '../types/user';
 import { toUserResponse, comparePassword } from '../utils/user-mapper';  
 
 export const authService = {
-  async signup(data: CreateUserInput): Promise<{ user: UserResponse; accessToken: string; refreshToken: string }> {
+  async signup(data: CreateUserInput): Promise<UserResponse> {
     const existing = await userRepository.findByEmail(data.email);
     if (existing) throw new Error('User already exists');
+
     const user = await userRepository.signup(data);
-    const accessToken = generateAccessToken({ userId: user.id, email: user.email });
-    const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
-    return { user: toUserResponse(user), accessToken, refreshToken };
+    return toUserResponse(user);
   },
 
-  async login(email: string, password: string): Promise<{ accessToken: string; refreshToken: string }> {
+  async login( email: string, password: string): Promise<{ user: UserResponse; accessToken: string; refreshToken: string }> {
     const user = await userRepository.findByEmail(email);
     if (!user || !user.password) throw new Error('Invalid credentials');
+
     const isValid = await comparePassword(password, user.password);
     if (!isValid) throw new Error('Invalid credentials');
+
     const accessToken = generateAccessToken({ userId: user.id, email: user.email });
     const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
-    return { accessToken, refreshToken };
+
+    return { 
+      user: toUserResponse(user), 
+      accessToken, 
+      refreshToken 
+    };
   },
+
 
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     const decoded = verifyRefreshToken(refreshToken);
     if (!decoded) throw new Error('Invalid refresh token');
-    const accessToken = generateAccessToken({ userId: decoded.userId, email: decoded.email });
+
+    const accessToken = generateAccessToken({ 
+      userId: decoded.userId, 
+      email: decoded.email 
+    });
+
     return { accessToken };
   },
 

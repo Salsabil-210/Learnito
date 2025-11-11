@@ -19,21 +19,23 @@ export const userRepository = {
     });
   },
 
-  async login(email: string, password: string): Promise<User | null> {
+  async login(email: string, password: string): Promise<User[]> {
     const user = await prisma.user.findUnique({ where: { email } });
     if (user && user.password && (await comparePassword(password, user.password))) {
-      return user;
+      return [user];
     }
-    return null;
+    return [];
   },
 
-  async findByEmail(email: string): Promise<User | null> {
-    return prisma.user.findUnique({ where: { email } });
-  },
+ async findByEmail(email: string): Promise<User | null> {
+  return prisma.user.findUnique({ where: { email } });
+},
+
 
   async findById(id: string): Promise<User | null> {
     return prisma.user.findUnique({ where: { id } });
   },
+  
 
   async update(id: string, data: UpdateUserInput): Promise<User> {
     const payload: any = { ...data };

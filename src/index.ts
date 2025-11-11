@@ -45,13 +45,6 @@ app.use('*', (req: Request, res: Response) => {
   });
 });
 
-app.use((err: Error, req: Request, res: Response, next: any) => {
-  console.error(err.stack);
-  res.status(500).json({
-    error: 'Something went wrong!',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
-  });
-});
 
 // Start server
 app.listen(PORT, () => {
