@@ -46,7 +46,6 @@ app.use('*', (req: Request, res: Response) => {
 });
 
 
-// Start server
 app.listen(PORT, () => {
   console.log(` Learnito server running on port ${PORT}`);
   console.log(` Environment: ${process.env.NODE_ENV || 'development'}`);
