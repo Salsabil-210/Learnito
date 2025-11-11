@@ -104,19 +104,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
           transition={{ duration: 0.8 }}
           className="max-w-4xl mx-auto text-center space-y-8"
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-gray-200 shadow-sm"
-          >
-            <Sparkles className="w-4 h-4 text-pink-500" />
-            <span className="text-sm font-medium text-gray-700">
-              Join 10,000+ passionate learners
-            </span>
-          </motion.div>
-
+        
           <div className="space-y-6">
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
               Discover the{" "}
@@ -153,21 +141,6 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
           </div>
 
           {/* Trust indicators */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="pt-8"
-          >
-            <p className="text-gray-500 text-sm mb-4">Trusted by learners from</p>
-            <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-              {["Google", "Microsoft", "Stanford", "MIT", "NASA"].map((company, index) => (
-                <div key={index} className="text-gray-400 font-semibold text-sm">
-                  {company}
-                </div>
-              ))}
-            </div>
-          </motion.div>
         </motion.div>
       </div>
 
@@ -263,7 +236,6 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
               { number: "10K+", label: "Active Learners" },
-              { number: "500+", label: "Expert Courses" },
               { number: "50+", label: "Countries" },
               { number: "98%", label: "Satisfaction Rate" },
             ].map((stat, index) => (
@@ -351,7 +323,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
             {[
               {
                 title: "Product",
-                links: ["Courses", "Features", "Pricing", "Testimonials"],
+                links: [ "Features", "Pricing", "Testimonials"],
               },
               {
                 title: "Company",
