@@ -9,7 +9,7 @@ export function authenticate(
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-) {
+): Response | void {
   const authHeader = req.headers["authorization"];
   const token = authHeader?.split(" ")[1];
   if (!token) return res.status(401).json({ message: "No token provided" });
@@ -18,5 +18,6 @@ export function authenticate(
   if (!decoded) return res.status(401).json({ message: "Invalid or expired token" });
 
   req.user = decoded;
-  next();
+  return next();
+
 }
