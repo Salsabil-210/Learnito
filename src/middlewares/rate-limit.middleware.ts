@@ -141,3 +141,10 @@ export const signupRateLimiter = createRateLimiter({
   keyPrefix: 'signup-limit',
   skipSuccessfulRequests: false,
 });
+
+export const authRateLimiter = createRateLimiter({
+  windowMs: 60 * 1000, // 1 minute
+  maxRequests: 10, // 10 requests per minute (slightly higher for general auth)
+  keyPrefix: 'auth-limit',
+  skipSuccessfulRequests: false,
+});
