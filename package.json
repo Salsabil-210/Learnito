@@ -4,9 +4,9 @@
   "description": "TypeScript Node.js Express server for Learnito",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "nodemon",
+    "build": "node init && tsc",
+    "start": "node init && node dist/index.js",
+    "dev": "node init && nodemon",
     "clean": "rimraf dist"
   },
   "keywords": [
