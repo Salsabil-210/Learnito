@@ -3,7 +3,7 @@ import { authService } from '../services/auth.service';
 
 export const authController = {
 
-  async googleAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async googleAuth(req: Request, res: Response, next: NextFunction) {
     try{
       const { idToken } = req.body;
       const result = await authService.googleAuth(idToken);
@@ -13,7 +13,7 @@ export const authController = {
     }
   },
 
-  async signup(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async signup(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await authService.signup(req.body);
       res.status(201).json(result);
@@ -22,7 +22,7 @@ export const authController = {
     }
   },
 
-  async login(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
       const result = await authService.login(email, password);
@@ -32,27 +32,10 @@ export const authController = {
     }
   },
 
-  async refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async refreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       const { refreshToken } = req.body;
       const result = await authService.refreshToken(refreshToken);
-      res.json(result);
-    } catch (error) {
-      next(error);
-    }
-  },
-
-  async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      // Accept refresh token from body or cookie
-      const refreshToken = req.body.refreshToken || req.cookies?.refreshToken;
-      
-      if (!refreshToken) {
-        res.status(400).json({ message: 'Refresh token is required' });
-        return;
-      }
-
-      const result = await authService.logout(refreshToken);
       res.json(result);
     } catch (error) {
       next(error);
