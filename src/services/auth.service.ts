@@ -64,6 +64,10 @@ export const authService = {
     const decoded = verifyRefreshToken(refreshToken);
     if (!decoded) throw new Error('Invalid refresh token');
 
+    // Validate that the user still exists in the database
+    const user = await userRepository.findById(decoded.userId);
+    if (!user) throw new Error('User not found');
+
     const accessToken = generateAccessToken({ 
       userId: decoded.userId, 
       email: decoded.email 
