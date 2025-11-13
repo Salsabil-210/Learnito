@@ -3,7 +3,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import pool from './config/db';
-import { connectRedis } from './config/redis';
 import authRoutes from './routes/auth.routes';
 dotenv.config();
 
@@ -20,11 +19,6 @@ app.use('/api/auth', authRoutes);
 pool.connect()
   .then(() => console.log(' Database connected successfully!'))
   .catch((err) => console.error(' Database connection failed:', err));
-
-// Connect to Redis (non-blocking)
-connectRedis()
-  .then(() => console.log(' Redis connected'))
-  .catch((err) => console.warn(' Redis connection failed (using in-memory fallback):', err.message));
 
 app.get('/', (req: Request, res: Response) => {
   res.json({
