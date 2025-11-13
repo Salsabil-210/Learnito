@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import pool from './config/db';
 import authRoutes from './routes/auth.routes';
+import { errorHandler } from './middlewares/errorHandler';
 dotenv.config();
 
 const app: Application = express();
@@ -45,6 +46,8 @@ app.use('*', (req: Request, res: Response) => {
   });
 });
 
+// Global error handler must be defined after all routes
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(` Learnito server running on port ${PORT}`);
