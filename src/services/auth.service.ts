@@ -3,6 +3,8 @@ import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '.
 import { CreateUserInput, UpdateUserInput, UserResponse } from '../types/user';
 import { toUserResponse, comparePassword } from '../utils/user-mapper';  
 import { verifyGoogleToken } from '../utils/googleAuth';
+import { UnauthorizedError, ConflictError, NotFoundError } from '../utils/errors';
+import { logger } from '../utils/logger';
 
 export const authService = {
 
@@ -12,17 +14,24 @@ export const authService = {
     let user = await userRepository.findByEmail(googleUser.email);
 
     if (!user) {
-    user = await userRepository.signup({
-    email: googleUser.email,
-    firstName: googleUser.firstName,
-    lastName: googleUser.lastName,
-    fullName: `${googleUser.firstName} ${googleUser.lastName}`, 
-    avatar: googleUser.avatar,
-    emailVerified: googleUser.emailVerified,
-    password: '', 
-    phone: null,
-  });
-}
+      logger.info('Creating new user from Google OAuth', { email: googleUser.email });
+      user = await userRepository.signup({
+        email: googleUser.email,
+        firstName: googleUser.firstName,
+        lastName: googleUser.lastName,
+        fullName: `${googleUser.firstName} ${googleUser.lastName}`, 
+        avatar: googleUser.avatar,
+        emailVerified: googleUser.emailVerified,
+        password: '', 
+        phone: null,
+        isActive: true,
+      });
+    } else if (!user.isActive) {
+      logger.warn('Google auth attempt for inactive user', { userId: user.id, email: user.email });
+      throw new UnauthorizedError('User account is inactive');
+    } else {
+      logger.info('User logged in via Google OAuth', { userId: user.id, email: user.email });
+    }
 
     const accessToken = generateAccessToken({ userId: user.id, email: user.email });
     const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
@@ -36,19 +45,35 @@ export const authService = {
 
   async signup(data: CreateUserInput): Promise<UserResponse> {
     const existing = await userRepository.findByEmail(data.email);
-    if (existing) throw new Error('User already exists');
+    if (existing) {
+      logger.warn('Signup attempt with existing email', { email: data.email });
+      throw new ConflictError('User already exists');
+    }
 
+    logger.info('Creating new user', { email: data.email });
     const user = await userRepository.signup(data);
     return toUserResponse(user);
   },
 
   async login( email: string, password: string): Promise<{ user: UserResponse; accessToken: string; refreshToken: string }> {
     const user = await userRepository.findByEmail(email);
-    if (!user || !user.password) throw new Error('Invalid credentials');
+    if (!user || !user.password) {
+      logger.warn('Login attempt with invalid credentials', { email });
+      throw new UnauthorizedError('Invalid credentials');
+    }
+
+    if (!user.isActive) {
+      logger.warn('Login attempt for inactive user', { userId: user.id, email });
+      throw new UnauthorizedError('User account is inactive');
+    }
 
     const isValid = await comparePassword(password, user.password);
-    if (!isValid) throw new Error('Invalid credentials');
+    if (!isValid) {
+      logger.warn('Login attempt with incorrect password', { email });
+      throw new UnauthorizedError('Invalid credentials');
+    }
 
+    logger.info('User logged in successfully', { userId: user.id, email });
     const accessToken = generateAccessToken({ userId: user.id, email: user.email });
     const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
 
@@ -62,11 +87,28 @@ export const authService = {
 
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     const decoded = verifyRefreshToken(refreshToken);
-    if (!decoded) throw new Error('Invalid refresh token');
+    if (!decoded) {
+      logger.warn('Invalid refresh token provided');
+      throw new UnauthorizedError('Invalid refresh token');
+    }
 
+    // Validate user exists and is active before generating new access token
+    const user = await userRepository.findById(decoded.userId);
+    if (!user) {
+      logger.warn('Refresh token for non-existent user', { userId: decoded.userId });
+      throw new UnauthorizedError('User not found');
+    }
+
+    if (!user.isActive) {
+      logger.warn('Refresh token for inactive user', { userId: user.id });
+      throw new UnauthorizedError('User account is inactive');
+    }
+
+    // Use fresh user data from database for token generation
+    logger.debug('Generating new access token', { userId: user.id });
     const accessToken = generateAccessToken({ 
-      userId: decoded.userId, 
-      email: decoded.email 
+      userId: user.id, 
+      email: user.email 
     });
 
     return { accessToken };

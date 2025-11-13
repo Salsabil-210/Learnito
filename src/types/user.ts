@@ -11,6 +11,7 @@ export const createUserSchema = z.object({
   avatar: z.string().url().optional().nullable(),
   emailVerified: z.boolean().optional().default(false),
   passwordResetAt: z.date().optional().nullable(),
+  isActive: z.boolean().optional().default(true),
 });
 
 export const updateUserSchema = z.object({
@@ -23,6 +24,7 @@ export const updateUserSchema = z.object({
   avatar: z.string().url().optional().nullable(),
   emailVerified: z.boolean().optional(),
   passwordResetAt: z.date().optional().nullable(),
+  isActive: z.boolean().optional(),
 });
 
 /** ── Inferred TS Types (this is for the controllers usage ) ─ */

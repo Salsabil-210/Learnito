@@ -15,6 +15,7 @@ export const userRepository = {
         avatar: data.avatar ?? null,
         emailVerified: data.emailVerified ?? false,
         passwordResetAt: data.passwordResetAt ?? null,
+        isActive: data.isActive ?? true,
       },
     });
   },

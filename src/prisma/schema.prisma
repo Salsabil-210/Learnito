@@ -18,6 +18,7 @@ model User {
   avatar          String?
   password        String?
   passwordResetAt DateTime?
+  isActive        Boolean   @default(true)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
