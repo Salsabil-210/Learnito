@@ -43,22 +43,23 @@ export const authService = {
     return toUserResponse(user);
   },
 
-  async login( email: string, password: string): Promise<{ user: UserResponse; accessToken: string; refreshToken: string }> {
-    const user = await userRepository.findByEmail(email);
-    if (!user || !user.password) throw new Error('Invalid credentials');
+async login(email: string, password: string) {
+  const user = await userRepository.findByEmail(email);
+  if (!user || !user.password) throw new Error("Invalid credentials");
 
-    const isValid = await comparePassword(password, user.password);
-    if (!isValid) throw new Error('Invalid credentials');
+  const isValid = await comparePassword(password, user.password);
+  if (!isValid) throw new Error("Invalid credentials");
 
-    const accessToken = generateAccessToken({ userId: user.id, email: user.email });
-    const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
+  const accessToken = generateAccessToken({ userId: user.id, email: user.email });
+  const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
 
-    return { 
-      user: toUserResponse(user), 
-      accessToken, 
-      refreshToken 
-    };
-  },
+  return {
+    user: toUserResponse(user),
+    accessToken,
+    refreshToken,
+  };
+},
+
 
 
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
