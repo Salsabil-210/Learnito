@@ -32,29 +32,44 @@ export const authController = {
     }
   },
 
-  async refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const { refreshToken } = req.body;
-      const result = await authService.refreshToken(refreshToken);
-      res.json(result);
-    } catch (error) {
-      next(error);
+async refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+       res.status(400).json({ message: "Refresh token is required" });
+       return;
     }
-  },
+    const refreshToken = authHeader.split(" ")[1];
+    const result = await authService.refreshToken(refreshToken);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+},
+
 
   async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const refreshToken = req.body.refreshToken ;
-      
-      if (!refreshToken) {
-        res.status(400).json({ message: 'Refresh token is required' });
-        return;
-      }
+      const authHeader = req.headers.authorization;
 
-      const result = await authService.logout(refreshToken);
-      res.json(result);
-    } catch (error) {
-      next(error);
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      res.status(400).json({ message: "Refresh token is required" });
+      return;
     }
-  },
+
+    const refreshToken = authHeader.split(" ")[1];
+
+    if (!refreshToken) {
+      res.status(400).json({ message: "Refresh token is required" });
+      return;
+    }
+
+    const result = await authService.logout(refreshToken);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+},
+
 };

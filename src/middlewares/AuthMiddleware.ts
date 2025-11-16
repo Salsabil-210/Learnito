@@ -14,7 +14,5 @@ export function authenticate(req: Request, res: Response, next: NextFunction) {
 
   const decoded = verifyAccessToken(token);
   if (!decoded) return res.status(401).json({ message: "Invalid or expired token" });
-
-
   next();
 }
