@@ -42,6 +42,12 @@ app.get('/api/health', (req: Request, res: Response) => {
     timestamp: new Date().toISOString()
   });
 });
+app.use((err: any, req: Request, res: Response, next: Function) => {
+  const status = err.status || err.statusCode || 400;
+  res.status(status).json({
+    message: err.message,  
+  });
+});
 
 app.use('*', (req: Request, res: Response) => {
   res.status(404).json({

@@ -1,21 +1,31 @@
-import jwt, { SignOptions } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import type { SignOptions } from "jsonwebtoken";
+import ms from "ms";
 
 dotenv.config();
 
-const ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || "";
-const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "";
-const ACCESS_EXPIRES = process.env.JWT_ACCESS_EXPIRES || "";
-const REFRESH_EXPIRES = process.env.JWT_REFRESH_EXPIRES || "";
+const accessSecret = process.env.JWT_ACCESS_SECRET;
+const refreshSecret = process.env.JWT_REFRESH_SECRET;
+const accessExpires = process.env.JWT_ACCESS_EXPIRES ?? "15m";
+const refreshExpires = process.env.JWT_REFRESH_EXPIRES ?? "7d";
+
+if (!accessSecret) throw new Error("Missing env: JWT_ACCESS_SECRET");
+if (!refreshSecret) throw new Error("Missing env: JWT_REFRESH_SECRET");
+
+const ACCESS_SECRET: string = accessSecret;
+const REFRESH_SECRET: string = refreshSecret;
 
 export type JwtPayload = { userId: string; email: string };
 
 export function generateAccessToken(payload: JwtPayload): string {
-  return jwt.sign(payload, ACCESS_SECRET, { expiresIn: ACCESS_EXPIRES as any });
+  const options: SignOptions = { expiresIn: accessExpires as ms.StringValue };
+  return jwt.sign(payload, ACCESS_SECRET, options);
 }
 
 export function generateRefreshToken(payload: JwtPayload): string {
-  return jwt.sign(payload, REFRESH_SECRET, { expiresIn: REFRESH_EXPIRES as any });
+  const options: SignOptions = { expiresIn: refreshExpires as ms.StringValue };
+  return jwt.sign(payload, REFRESH_SECRET, options);
 }
 
 export function verifyAccessToken(token: string): JwtPayload | null {

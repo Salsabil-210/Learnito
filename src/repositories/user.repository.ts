@@ -1,21 +1,27 @@
 import { PrismaClient, User } from '@prisma/client';
 import { CreateUserInput, UpdateUserInput } from '../types/user';
-import { hashPassword, comparePassword } from '../utils/user-mapper';  
+import { hashPassword } from '../utils/user-mapper';  
 
 const prisma = new PrismaClient();
 
 export const userRepository = {
-  async signup(data: CreateUserInput): Promise<User> {
-    return prisma.user.create({
-      data: {
-        ...data,
-        password: data.password,
-        phone: data.phone ?? null,
-        avatar: data.avatar ?? null,
-        emailVerified: data.emailVerified ?? false,
-        passwordResetAt: data.passwordResetAt ?? null,
-      },
-    });
+async signup(data: CreateUserInput): Promise<User> {
+  const hashedPassword = await hashPassword(data.password);
+
+  return prisma.user.create({
+    data: {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      fullName: data.fullName,
+      email: data.email,
+      password: hashedPassword,
+      phone: data.phone ?? null,
+      avatar: data.avatar ?? null,
+      emailVerified: data.emailVerified ?? false,
+      passwordResetAt: data.passwordResetAt ?? null
+    },
+  });
+
   },
 
   async findByEmail(email: string): Promise<User | null> {

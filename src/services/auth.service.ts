@@ -66,7 +66,6 @@ async login(email: string, password: string) {
     const decoded = verifyRefreshToken(refreshToken);
     if (!decoded) throw new Error('Invalid refresh token');
 
-    // Check if token is blacklisted
     try {
       if (redisClient.status === 'ready') {
         const blacklistKey = `blacklist:${refreshToken}`;
