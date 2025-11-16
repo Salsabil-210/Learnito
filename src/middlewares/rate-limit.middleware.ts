@@ -2,14 +2,13 @@ import { Request, Response, NextFunction } from 'express';
 import redisClient from '../config/redis';
 
 interface RateLimitOptions {
-  windowMs: number; // Time window in milliseconds
-  maxRequests: number; // Max requests per window
-  keyPrefix?: string; // Prefix for Redis keys
-  skipSuccessfulRequests?: boolean; // Don't count successful requests
-  skipFailedRequests?: boolean; // Don't count failed requests
+  windowMs: number; 
+  maxRequests: number; 
+  keyPrefix?: string; 
+  skipSuccessfulRequests?: boolean; 
+  skipFailedRequests?: boolean; 
 }
 
-// In-memory fallback when Redis is unavailable
 class InMemoryStore {
   private store: Map<string, { count: number; resetTime: number }> = new Map();
 
@@ -25,7 +24,6 @@ class InMemoryStore {
     const newEntry = { count: 1, resetTime: now + windowMs };
     this.store.set(key, newEntry);
 
-    // Cleanup old entries periodically
     if (this.store.size > 10000) {
       this.cleanup(now);
     }
@@ -54,7 +52,6 @@ export function createRateLimiter(options: RateLimitOptions) {
   } = options;
 
   return async (req: Request, res: Response, next: NextFunction) => {
-    // Generate unique key based on IP and optional email
     const identifier = req.ip || req.socket.remoteAddress || 'unknown';
     const email = req.body?.email || '';
     const key = `${keyPrefix}:${identifier}:${email}`;

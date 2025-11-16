@@ -44,8 +44,7 @@ export const authController = {
 
   async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      // Accept refresh token from body or cookie
-      const refreshToken = req.body.refreshToken || req.cookies?.refreshToken;
+      const refreshToken = req.body.refreshToken ;
       
       if (!refreshToken) {
         res.status(400).json({ message: 'Refresh token is required' });
