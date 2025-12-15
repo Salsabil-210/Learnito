@@ -28,17 +28,10 @@ export function generateRefreshToken(payload: JwtPayload): string {
   return jwt.sign(payload, REFRESH_SECRET, options);
 }
 
-export function verifyAccessToken(token: string): JwtPayload | null {
+export function validateToken(token: string, type: "access" | "refresh"): JwtPayload | null {
+  const secret = type === "access" ? ACCESS_SECRET : REFRESH_SECRET;
   try {
-    return jwt.verify(token, ACCESS_SECRET) as JwtPayload;
-  } catch {
-    return null;
-  }
-}
-
-export function verifyRefreshToken(token: string): JwtPayload | null {
-  try {
-    return jwt.verify(token, REFRESH_SECRET) as JwtPayload;
+    return jwt.verify(token, secret) as JwtPayload;
   } catch {
     return null;
   }

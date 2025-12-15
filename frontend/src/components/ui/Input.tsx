@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 
 interface InputProps {
@@ -31,25 +32,42 @@ export const Input: React.FC<InputProps> = ({
       </label>
       <div className="relative w-full">
         {Icon && (
-          <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+          <motion.div
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            animate={{ color: error ? '#ef4444' : '#9ca3af' }}
+            transition={{ duration: 0.2 }}
+          >
             <Icon size={18} />
-          </div>
+          </motion.div>
         )}
         <input
           type={type}
           name={name}
+          id={name}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
           disabled={disabled}
-          className={`w-full rounded-lg bg-white border border-gray-300 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-all ${Icon ? 'pl-11 pr-4 py-3' : 'px-4 py-3'} ${
+          className={`w-full rounded-lg bg-white border text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-200 ${Icon ? 'pl-11 pr-4 py-3' : 'px-4 py-3'} ${
             error
               ? 'border-red-500 focus:ring-red-500'
-              : 'focus:ring-blue-500'
-          } ${disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''}`}
+              : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+          } ${disabled ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : 'hover:border-gray-400'}`}
         />
       </div>
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -5, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: 'auto' }}
+            exit={{ opacity: 0, y: -5, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="mt-1 text-sm text-red-500"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

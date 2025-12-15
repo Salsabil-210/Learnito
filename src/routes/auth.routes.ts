@@ -1,14 +1,13 @@
 import { Router } from 'express';
-import {authenticate} from '../middlewares/AuthMiddleware';
 import { authController } from '../controllers/auth.controller';
-import { loginRateLimiter, signupRateLimiter, authRateLimiter } from '../middlewares/rate-limit.middleware';
+import { extractRefreshToken } from '../middlewares/AuthMiddleware';
 
 const router = Router();
 
-router.post('/gauth', authRateLimiter, authController.googleAuth);
-router.post('/signup', signupRateLimiter, authController.signup);
-router.post('/login', loginRateLimiter,  authController.login);
-router.post('/refresh', authRateLimiter, authController.refreshToken);
-router.post('/logout', authRateLimiter, authController.logout);
+router.post('/google', authController.googleAuth);
+router.post('/signup', authController.signup);
+router.post('/login', authController.login);
+router.post('/refresh-token', extractRefreshToken, authController.refreshToken);
+router.post('/logout', extractRefreshToken, authController.logout);
 
 export default router;

@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { authService } from '../services/auth.service';
+import { RefreshTokenRequest } from '../middlewares/AuthMiddleware';
 
 export const authController = {
 
   async googleAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try{
+    try {
       const { idToken } = req.body;
       const result = await authService.googleAuth(idToken);
       res.json(result);
@@ -26,50 +27,30 @@ export const authController = {
     try {
       const { email, password } = req.body;
       const result = await authService.login(email, password);
+res.json({
+        accessToken: result.accessToken,
+      });    } catch (error) {
+      next(error);
+    }
+  },
+
+  async refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { refreshToken, refreshTokenPayload } = req as RefreshTokenRequest;
+      const result = await authService.refreshToken(refreshTokenPayload, refreshToken);
       res.json(result);
     } catch (error) {
       next(error);
     }
   },
 
-async refreshToken(req: Request, res: Response, next: NextFunction): Promise<void> {
-  try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-       res.status(400).json({ message: "Refresh token is required" });
-       return;
-    }
-    const refreshToken = authHeader.split(" ")[1];
-    const result = await authService.refreshToken(refreshToken);
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-},
-
-
   async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(400).json({ message: "Refresh token is required" });
-      return;
+      const { refreshToken } = req as RefreshTokenRequest;
+      const result = await authService.logout(refreshToken);
+      res.json(result);
+    } catch (error) {
+      next(error);
     }
-
-    const refreshToken = authHeader.split(" ")[1];
-
-    if (!refreshToken) {
-      res.status(400).json({ message: "Refresh token is required" });
-      return;
-    }
-
-    const result = await authService.logout(refreshToken);
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
-},
-
+  },
 };

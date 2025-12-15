@@ -14,12 +14,15 @@ import {
   Shield,
   Mail,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface WelcomePageProps {
   onGetStarted: () => void;
 }
 
 export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden text-gray-900 bg-gradient-to-br from-blue-50 via-white to-pink-50">
       {/* Enhanced floating background elements */}
@@ -87,7 +90,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={onGetStarted}
+            onClick={() => navigate('/login')}
             className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-pink-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 group"
           >
             Sign In
@@ -123,7 +126,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={onGetStarted}
+              onClick={() => navigate('/login')}
               className="px-8 py-4 bg-gradient-to-r from-blue-600 to-pink-600 text-white font-bold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center gap-3 group"
             >
               Start Learning Free
@@ -255,7 +258,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({ onGetStarted }) => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={onGetStarted}
+                onClick={() => navigate('/login')}
                 className="px-10 py-4 bg-white text-gray-900 font-bold rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center justify-center gap-3 mx-auto group hover:bg-gray-50"
               >
                 Get Started for Free

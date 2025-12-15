@@ -5,13 +5,21 @@ import dotenv from 'dotenv';
 import pool from './config/db';
 import { connectRedis } from './config/redis';
 import authRoutes from './routes/auth.routes';
+import cookieParser from 'cookie-parser';
 dotenv.config();
 
 const app: Application = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 app.use(helmet()); 
-app.use(cors());
+app.use(cookieParser());
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true })); 
 
@@ -21,7 +29,6 @@ pool.connect()
   .then(() => console.log(' Database connected successfully!'))
   .catch((err) => console.error(' Database connection failed:', err));
 
-// Connect to Redis (non-blocking)
 connectRedis()
   .then(() => console.log(' Redis connected'))
   .catch((err) => console.warn(' Redis connection failed (using in-memory fallback):', err.message));
@@ -42,6 +49,7 @@ app.get('/api/health', (req: Request, res: Response) => {
     timestamp: new Date().toISOString()
   });
 });
+
 app.use((err: any, req: Request, res: Response, next: Function) => {
   const status = err.status || err.statusCode || 400;
   res.status(status).json({
