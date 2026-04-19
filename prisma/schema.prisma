@@ -20,7 +20,7 @@ model User {
   passwordResetAt DateTime?
 
   // Twitter OAuth fields
-  twitterId       String?
+  twitterId       String?   @unique
   username        String?
   displayName     String?
   avatarUrl       String?
