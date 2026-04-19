@@ -26,6 +26,8 @@ export const authService = {
       });
     }
 
+    if (!user.email) throw new Error('User email not found');
+
     const accessToken = generateAccessToken({ userId: user.id, email: user.email });
     const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
 
@@ -51,8 +53,8 @@ export const authService = {
     const isValid = await comparePassword(password, user.password);
     if (!isValid) throw new Error("Invalid credentials");
 
-    const accessToken = generateAccessToken({ userId: user.id, email: user.email });
-    const refreshToken = generateRefreshToken({ userId: user.id, email: user.email });
+    const accessToken = generateAccessToken({ userId: user.id, email });
+    const refreshToken = generateRefreshToken({ userId: user.id, email });
 
     return {
       accessToken,
@@ -61,7 +63,6 @@ export const authService = {
   },
 
   async refreshToken(payload: JwtPayload, refreshToken: string): Promise<{ accessToken: string }> {
-    // Check blacklist only - validation already done in middleware
     if (redisClient.status === 'ready') {
       const blacklistKey = `blacklist:${refreshToken}`;
       const isBlacklisted = await redisClient.get(blacklistKey);
@@ -87,10 +88,9 @@ export const authService = {
   },
 
   async logout(refreshToken: string): Promise<{ message: string }> {
-    // No validation needed - middleware already did it
     try {
       const blacklistKey = `blacklist:${refreshToken}`;
-      const expirationSeconds = 7 * 24 * 60 * 60; // 7 days
+      const expirationSeconds = 7 * 24 * 60 * 60; 
 
       if (redisClient.status === 'ready') {
         await redisClient.setex(blacklistKey, expirationSeconds, '1');

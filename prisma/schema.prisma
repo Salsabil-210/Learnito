@@ -9,24 +9,49 @@ datasource db {
 
 model User {
   id              String    @id @default(cuid())
-  firstName       String
-  lastName        String
-  fullName        String
-  email           String    @unique
+  firstName       String?
+  lastName        String?
+  fullName        String?
+  email           String?   @unique
   emailVerified   Boolean   @default(false)
   phone           String?
   avatar          String?
   password        String?
   passwordResetAt DateTime?
+
+  // Twitter OAuth fields
+  twitterId       String?
+  username        String?
+  displayName     String?
+  avatarUrl       String?
+
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
-   // Relations
+  // Relations
   collections     Collection[]
   bookmarks       Bookmark[]
   caseStudies     CaseStudy[]
   tasks           Task[]
   studyPlans      AIStudyPlan[]
+  oAuthAccounts   OAuthAccount[]
+}
+
+model OAuthAccount {
+  id           String   @id @default(cuid())
+  provider     String   // e.g., "twitter"
+  providerId   String   // The Twitter user ID
+  accessToken  String
+  refreshToken String?
+  expiresAt    DateTime?
+  scope        String?
+  
+  // Relationship to User
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // This is CRITICAL for your .upsert() to work in the code
+  @@unique([provider, providerId])
 }
 model Collection {
   id          String    @id @default(cuid())
