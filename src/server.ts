@@ -26,8 +26,8 @@ async function bootstrap(): Promise<void> {
   const server = app.listen(env.port, () => {
     console.info(`[Server] 🚀 Listening on http://localhost:${env.port}`);
     console.info(`[Server]    Environment : ${env.nodeEnv}`);
-    console.info(`[Server]    Auth route  : GET /auth/twitter`);
-    console.info(`[Server]    Callback    : GET /auth/twitter/callback`);
+    console.info(`[Server]    Auth route  : GET /api/auth/twitter`);
+    console.info(`[Server]    Callback    : GET /api/auth/twitter/callback`);
   });
 
   // 3. Graceful shutdown
