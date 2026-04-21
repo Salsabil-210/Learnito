@@ -1,13 +1,14 @@
 import { User } from "@prisma/client";
+import { UserResponse } from "../types/user";
 import bcrypt from "bcrypt";
 
-export function toUserResponse(u: User) {
+export function toUserResponse(u: User): UserResponse {
   return {
     id: u.id,
-    firstName: u.firstName,
-    lastName: u.lastName,
-    fullName: u.fullName,
-    email: u.email,
+    firstName: u.firstName || "",
+    lastName: u.lastName || "",
+    fullName: u.fullName || "",
+    email: u.email || "",
     emailVerified: u.emailVerified,
     phone: u.phone,
     avatar: u.avatar,
